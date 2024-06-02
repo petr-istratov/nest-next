@@ -14,26 +14,40 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = new User();
+    if (createUserDto.id) user.id = createUserDto.id;
     user.firstName = createUserDto.firstName;
     user.lastName = createUserDto.lastName;
+    user.position = createUserDto.position;
+    if (createUserDto.parentId) {
+      const parent = await this.dataSource.manager.findOneBy(User, {
+        id: createUserDto.parentId,
+      });
+      user.parent = parent;
+    }
     return this.dataSource.manager.save(user);
   }
 
   findAll(): Promise<User[]> {
-    return this.dataSource.manager.getTreeRepository(User).findTrees();
+    return this.dataSource.manager.getTreeRepository(User).findTrees({});
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.dataSource.manager.findOneBy(User, { id });
-    const parent = await this.dataSource.manager.findOneBy(User, {
-      id: updateUserDto.parentId,
-    });
-    // check if parent is null
-    user.parent = parent;
+
+    if (updateUserDto.parentId) {
+      const parent = await this.dataSource.manager.findOneBy(User, {
+        id: updateUserDto.parentId,
+      });
+      // check if parent is null
+      user.parent = parent;
+    } else {
+      user.parent = null;
+    }
+    user.position = updateUserDto.position;
     return this.dataSource.manager.save(user); /// try update
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.dataSource.manager.softDelete(User, id); // hooks clean
   }
 }

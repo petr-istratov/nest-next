@@ -14,14 +14,17 @@ import {
 @Tree('closure-table')
 @Entity()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn({ type: 'int' })
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'varchar', length: 50 })
   firstName: string;
 
   @Column({ type: 'varchar', length: 50 })
   lastName: string;
+
+  @Column({ type: 'float' })
+  position: number;
 
   @TreeParent()
   parent: User;

@@ -1,13 +1,18 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 export enum NOTIFICATIONS_TYPES {
-  SUCCESS = 'success',
-  ERROR = 'error',
-  DEFAULT = 'default',
-  WARNING = 'warning',
+  SUCCESS = "success",
+  ERROR = "error",
+  DEFAULT = "default",
+  WARNING = "warning",
 }
 
-const toastAction = (options: { name: string; message?: string; state: NOTIFICATIONS_TYPES; callback?: () => void }) => {
+const toastAction = (options: {
+  name: string;
+  message?: string;
+  state: NOTIFICATIONS_TYPES;
+  callback?: () => void;
+}) => {
   switch (options.state) {
     case NOTIFICATIONS_TYPES.DEFAULT:
       toast.info(options.message ? options.message : `Saving...`, {

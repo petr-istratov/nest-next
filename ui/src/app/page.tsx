@@ -1,13 +1,14 @@
 import { ToastContainer } from "react-toastify";
-import Page from '../components/Page';
-import { getUsersTree } from '../api/users';
+
+import { getUsersTree } from "../api/users";
+import Page from "../components/Page";
 
 export default async function Home() {
   const result = await getUsersTree();
   return (
     <>
       <ToastContainer />
-      <Page title={'Organization structure'} data={result.data} />
+      <Page title={"Organization structure"} data={result.data} />
     </>
   );
 }

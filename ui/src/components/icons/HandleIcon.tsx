@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC } from "react";
 
 const HandleIcon: FC = () => (
   <svg viewBox="0 0 20 20" width="12">

@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { UniqueIdentifier } from '@dnd-kit/core';
-import { scroller } from 'react-scroll';
+import { UniqueIdentifier } from "@dnd-kit/core";
+import { useEffect, useState } from "react";
+import { scroller } from "react-scroll";
 
-import { Event, EventName, TreeItems, TreeOptions } from '../types/types';
+import { Event, EventName, TreeItems, TreeOptions } from "../types/types";
 import {
   addNode,
   deleteNode,
   getEvent,
+  initializeTreeState,
   reorder,
   toggleOpen,
-  initializeTreeState,
-} from '../utils/utils';
+} from "../utils/utils";
 
 interface Props {
   data: TreeItems;
@@ -49,7 +49,8 @@ const useTreeState = ({ data, onChange, options = {} }: Props) => {
         const elementId = `treeItemId_${event.payload.id}`;
         const treeItemElement = document.getElementById(elementId);
         if (!treeItemElement) return;
-        const treeItemBottomEdge = treeItemElement.offsetTop + treeItemElement.offsetHeight;
+        const treeItemBottomEdge =
+          treeItemElement.offsetTop + treeItemElement.offsetHeight;
         const bodyOffsetFinish = window.scrollY + window.innerHeight;
 
         if (treeItemBottomEdge > bodyOffsetFinish) {
@@ -84,6 +85,6 @@ const useTreeState = ({ data, onChange, options = {} }: Props) => {
     treeState,
     reducers,
   };
-}
+};
 
 export default useTreeState;

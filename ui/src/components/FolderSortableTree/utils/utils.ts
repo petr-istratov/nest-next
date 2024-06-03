@@ -1,32 +1,40 @@
-import type { UniqueIdentifier } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
-import { v4 as uuidV4 } from 'uuid';
+import type { UniqueIdentifier } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
+import { v4 as uuidV4 } from "uuid";
 
-import type { EventName, TreeItems, TreeItem, FlattenedItem } from '../types/types';
+import type {
+  EventName,
+  FlattenedItem,
+  TreeItem,
+  TreeItems,
+} from "../types/types";
 
-const sort = (field: string, dir = 'asc') => (xs) => 
-  [...xs].sort (dir == 'asc'
-    ? ({ [field]: a }, { [field]: b }) => a < b ? -1 : a > b ?  1 : 0         
-    : ({ [field]: a }, { [field]: b }) => a < b ?  1 : a > b ? -1 : 0         
-  )
+const sort =
+  (field: string, dir = "asc") =>
+  (items: any[]) =>
+    [...items].sort(
+      dir == "asc"
+        ? ({ [field]: a }, { [field]: b }) => (a < b ? -1 : a > b ? 1 : 0)
+        : ({ [field]: a }, { [field]: b }) => (a < b ? 1 : a > b ? -1 : 0),
+    );
 
-const sortRecursive = (childField: string) => (sort) => (xs) =>
-  sort([...xs]).map(({[childField]: cf, ...rest}) => ({
-    ...rest, 
-    [childField]: sortRecursive(childField)(sort)(cf)
-  }));
+const sortRecursive =
+  (childField: string) => (sort: (items: any) => any) => (xs: any[]) =>
+    sort([...xs]).map(({ [childField]: cf, ...rest }) => ({
+      ...rest,
+      [childField]: sortRecursive(childField)(sort)(cf),
+    }));
 
-
-
-// Build a reusable sort function
-const mySort = sortRecursive('children')(sort('position')) // defaults to ascending
-
-
+const deepSorting = sortRecursive("children")(sort("position")); // defaults to ascending
 const deepClone = (x: any) => JSON.parse(JSON.stringify(x));
 
 const addItem = (
   items: TreeItems,
-  { parentId, firstName, lastName }: { parentId: UniqueIdentifier; firstName: string, lastName: string },
+  {
+    parentId,
+    firstName,
+    lastName,
+  }: { parentId: UniqueIdentifier; firstName: string; lastName: string },
 ) => {
   let newItems: TreeItems = [];
   let payload;
@@ -38,7 +46,10 @@ const addItem = (
     children: [],
     collapsed: true,
     editing: true,
-    position: nodes.length > 0 ? Math.max(...nodes.map((item) => item.position)) + 1 : 0,
+    position:
+      nodes.length > 0
+        ? Math.max(...nodes.map((item) => item.position)) + 1
+        : 0,
   });
 
   if (parentId === null) {
@@ -50,7 +61,10 @@ const addItem = (
         payload = getPayload(item.children);
         item.children = [...item.children, payload];
       } else if (item.children && item.children.length) {
-        const result: { newItems: TreeItems; payload?: TreeItem } = addItem(item.children, { parentId, firstName, lastName });
+        const result: { newItems: TreeItems; payload?: TreeItem } = addItem(
+          item.children,
+          { parentId, firstName, lastName },
+        );
         item.children = result.newItems;
         if (!payload) payload = result.payload;
       }
@@ -85,7 +99,11 @@ export const addNode = (
   parentId: UniqueIdentifier,
   { firstName, lastName }: { firstName: string; lastName: string },
 ) => {
-  const { newItems, payload } = addItem(rootNodes || [], { parentId, firstName, lastName });
+  const { newItems, payload } = addItem(rootNodes || [], {
+    parentId,
+    firstName,
+    lastName,
+  });
   return { state: [...newItems], payload: { parentId, ...payload } };
 };
 
@@ -95,7 +113,12 @@ export const deleteNode = (rootNodes: TreeItems, id: UniqueIdentifier) => {
   return { state: [...newItems], payload: { id } };
 };
 
-export const getEvent = (eventName: EventName, id: UniqueIdentifier | null, payload: any, ...params: any) => ({
+export const getEvent = (
+  eventName: EventName,
+  id: UniqueIdentifier | null,
+  payload: any,
+  ...params: any
+) => ({
   type: eventName,
   id,
   params,
@@ -135,11 +158,19 @@ export const reorder = (
     newPosition: number;
   },
 ) => {
-  const newItems = setProperty(sortedItems || [], id, `position`, () => newPosition);
+  const newItems = setProperty(
+    sortedItems || [],
+    id,
+    `position`,
+    () => newPosition,
+  );
   return { state: [...newItems], payload: { id, newParentId, newPosition } };
 };
 
-const setTreeState: (tree: TreeItems, collapsed: boolean) => TreeItems = (tree, collapsed) => {
+const setTreeState: (tree: TreeItems, collapsed: boolean) => TreeItems = (
+  tree,
+  collapsed,
+) => {
   const newTree = [];
 
   for (const node of tree) {
@@ -156,7 +187,11 @@ const setTreeState: (tree: TreeItems, collapsed: boolean) => TreeItems = (tree, 
   return newTree;
 };
 
-export const toggleOpen = (rootNodes: TreeItems, id: UniqueIdentifier, { isOpen }: { isOpen: boolean }) => {
+export const toggleOpen = (
+  rootNodes: TreeItems,
+  id: UniqueIdentifier,
+  { isOpen }: { isOpen: boolean },
+) => {
   const newItems = setProperty(rootNodes || [], id, `collapsed`, () => !isOpen);
   return { state: [...newItems] };
 };
@@ -176,8 +211,11 @@ const isValidCollapsedStatus = (node: TreeItem) => {
   return true;
 };
 
-export const initializeTreeState = (data: TreeItems, initOpenStatus = `OPEN`) => {
-  let initState = mySort(deepClone({ data }).data);
+export const initializeTreeState = (
+  data: TreeItems,
+  initOpenStatus = `OPEN`,
+) => {
+  let initState = deepSorting(deepClone({ data }).data);
 
   switch (initOpenStatus) {
     case `OPEN`:
@@ -202,7 +240,10 @@ export const findItem = (items: TreeItem[], itemId: UniqueIdentifier) => {
 };
 
 export const buildTree = (flattenedItems: FlattenedItem[]): TreeItems => {
-  const root: { id: string; children: TreeItems } = { id: `root`, children: [] };
+  const root: { id: string; children: TreeItems } = {
+    id: `root`,
+    children: [],
+  };
   const nodes: Record<string, typeof root> = { [root.id]: root };
   const items = flattenedItems.map((item) => ({ ...item, children: [] }));
 
@@ -218,7 +259,11 @@ export const buildTree = (flattenedItems: FlattenedItem[]): TreeItems => {
   return root.children;
 };
 
-const flatten = (items: TreeItems, parentId: UniqueIdentifier | null = null, depth = 0): FlattenedItem[] => {
+const flatten = (
+  items: TreeItems,
+  parentId: UniqueIdentifier | null = null,
+  depth = 0,
+): FlattenedItem[] => {
   return items.reduce<FlattenedItem[]>((acc, item, index) => {
     return [
       ...acc,
@@ -232,7 +277,10 @@ export const flattenTree = (items: TreeItems): FlattenedItem[] => {
   return flatten(items);
 };
 
-export const findItemDeep = (items: TreeItems, itemId: UniqueIdentifier): TreeItem | undefined => {
+export const findItemDeep = (
+  items: TreeItems,
+  itemId: UniqueIdentifier,
+): TreeItem | undefined => {
   for (const item of items) {
     const { id, children } = item;
 
@@ -337,10 +385,20 @@ export const getProjection = (
     return newParent ?? null;
   };
 
-  return { depth, maxDepth, minDepth, parentId: getParentId(), previousItem, nextItem };
+  return {
+    depth,
+    maxDepth,
+    minDepth,
+    parentId: getParentId(),
+    previousItem,
+    nextItem,
+  };
 };
 
-export const removeChildrenOf = (items: FlattenedItem[], ids: UniqueIdentifier[]) => {
+export const removeChildrenOf = (
+  items: FlattenedItem[],
+  ids: UniqueIdentifier[],
+) => {
   const excludeParentIds = [...ids];
 
   return items.filter((item) => {

@@ -1,15 +1,16 @@
-import React, { forwardRef, HTMLAttributes, Ref } from 'react';
-import type { UniqueIdentifier } from '@dnd-kit/core';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { Menu } from 'grommet';
-import { More } from 'grommet-icons';
+import type { UniqueIdentifier } from "@dnd-kit/core";
+import { motion } from "framer-motion";
+import { Menu } from "grommet";
+import { More } from "grommet-icons";
+import React, { forwardRef, HTMLAttributes, Ref } from "react";
+import styled from "styled-components";
 
-import Handle from './Handle';
-import Action from './Action';
-import CollapseIcon from '../../icons/CollapseIcon';
+import CollapseIcon from "../../icons/CollapseIcon";
+import Action from "./Action";
+import Handle from "./Handle";
 
-export interface TreeItemProps extends Omit<HTMLAttributes<HTMLLIElement>, `id`> {
+export interface TreeItemProps
+  extends Omit<HTMLAttributes<HTMLLIElement>, `id`> {
   id: UniqueIdentifier;
   childCount?: number;
   clone?: boolean;
@@ -135,26 +136,30 @@ const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
         ref={wrapperRef}
         style={
           {
-            '--spacing': `${indentationWidth * depth}px`,
+            "--spacing": `${indentationWidth * depth}px`,
           } as React.CSSProperties
         }
       >
         <Item ref={ref} style={style}>
           <Handle {...handleProps} />
           {!!childCount && childCount > 0 && (
-            <Action onClick={collapsed ? openMe : closeMe} isCollapse collapsed={collapsed}>
+            <Action
+              onClick={collapsed ? openMe : closeMe}
+              isCollapse
+              collapsed={collapsed}
+            >
               <CollapseIcon />
             </Action>
           )}
-          <NameContainer>
-            {value}
-          </NameContainer>
+          <NameContainer>{value}</NameContainer>
           {!clone && (
             <Menu
               icon={<More />}
               items={[
                 { label: `Add User`, onClick: addUser },
-                ...(onRemove ? [{ label: `Delete`, onClick: () => onRemove() }] : []),
+                ...(onRemove
+                  ? [{ label: `Delete`, onClick: () => onRemove() }]
+                  : []),
               ]}
             />
           )}
@@ -162,9 +167,9 @@ const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
         </Item>
       </Wrapper>
     );
-  }
+  },
 );
 
-TreeItem.displayName = 'TreeItem';
+TreeItem.displayName = "TreeItem";
 
 export default TreeItem;

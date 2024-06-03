@@ -1,5 +1,5 @@
-import { CSSProperties, forwardRef, HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import { CSSProperties, forwardRef, HTMLAttributes } from "react";
+import styled from "styled-components";
 
 export interface ActionProps extends HTMLAttributes<HTMLButtonElement> {
   active?: {
@@ -81,14 +81,14 @@ const Action = forwardRef<HTMLButtonElement, ActionProps>(
       style={
         {
           cursor,
-          '--fill': active?.fill,
-          '--background': active?.background,
+          "--fill": active?.fill,
+          "--background": active?.background,
         } as CSSProperties
       }
     />
   ),
 );
 
-Action.displayName = 'Action';
+Action.displayName = "Action";
 
 export default Action;

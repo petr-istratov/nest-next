@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import Head from 'next/head';
-import { Box, Heading, Main } from 'grommet';
+import { Box, Heading, Main } from "grommet";
+import Head from "next/head";
 
+import { addUser, deleteUser, updateUser } from "../api/users";
 import FolderSortableTree, {
   Event,
   TreeItems,
-} from '../components/FolderSortableTree/FolderSortableTree';
-import toastAction, { NOTIFICATIONS_TYPES } from '../utils/toastActions';
-import { addUser, deleteUser, updateUser } from '../api/users';
+} from "../components/FolderSortableTree/FolderSortableTree";
+import toastAction, { NOTIFICATIONS_TYPES } from "../utils/toastActions";
 
 interface PageProps {
   data: TreeItems;
@@ -20,7 +20,11 @@ export default function Page(props: PageProps) {
     switch (event.type) {
       case `ADD_NODE`: {
         try {
-          toastAction({ name: `users`, state: NOTIFICATIONS_TYPES.DEFAULT, message: 'Adding user...' });
+          toastAction({
+            name: `users`,
+            state: NOTIFICATIONS_TYPES.DEFAULT,
+            message: "Adding user...",
+          });
           await addUser({
             id: event.payload.id,
             firstName: event.payload.firstName,
@@ -30,22 +34,38 @@ export default function Page(props: PageProps) {
           });
           toastAction({ name: `users`, state: NOTIFICATIONS_TYPES.SUCCESS });
         } catch (error: any) {
-          toastAction({ name: `users`, state: NOTIFICATIONS_TYPES.ERROR, message: error.message });
+          toastAction({
+            name: `users`,
+            state: NOTIFICATIONS_TYPES.ERROR,
+            message: error.message,
+          });
         }
         break;
       }
       case `DELETE_NODE`: {
-        toastAction({ name: `users`, state: NOTIFICATIONS_TYPES.DEFAULT });
+        toastAction({
+          name: `users`,
+          state: NOTIFICATIONS_TYPES.DEFAULT,
+          message: "Deleting user...",
+        });
         const res = await deleteUser(event.payload.id);
         if (res.status === 200) {
-          toastAction({ name: `users`, state: NOTIFICATIONS_TYPES.SUCCESS });
+          toastAction({
+            name: `users`,
+            state: NOTIFICATIONS_TYPES.SUCCESS,
+            message: "Deleted",
+          });
         } else {
           toastAction({ name: `users`, state: NOTIFICATIONS_TYPES.ERROR });
         }
         break;
       }
       case `SORT`: {
-        toastAction({ name: `users`, state: NOTIFICATIONS_TYPES.DEFAULT });
+        toastAction({
+          name: `users`,
+          state: NOTIFICATIONS_TYPES.DEFAULT,
+          message: "Saving new position...",
+        });
         const res = await updateUser({
           id: event.payload.id,
           parentId: event.payload.newParentId || null,
@@ -59,7 +79,7 @@ export default function Page(props: PageProps) {
         break;
       }
     }
-  }
+  };
 
   return (
     <>
@@ -70,7 +90,11 @@ export default function Page(props: PageProps) {
       <Main overflow="unset" pad="large" gap="medium">
         <Box direction="row" align="center" gap="small" justify="between">
           <Box direction="row" align="center" gap="small">
-            <Heading size="medium" margin="none" style={{ overflowWrap: `anywhere` }}>
+            <Heading
+              size="medium"
+              margin="none"
+              style={{ overflowWrap: `anywhere` }}
+            >
               {props.title}
             </Heading>
           </Box>

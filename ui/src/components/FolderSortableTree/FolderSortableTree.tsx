@@ -1,13 +1,13 @@
-'use client'
-import { MouseEventHandler, createContext, useState } from 'react';
-import { Box, Button } from 'grommet';
-import styled from 'styled-components';
+"use client";
+import { Box, Button } from "grommet";
+import { createContext, useState } from "react";
+import styled from "styled-components";
 
-import { Event, TreeItems, TreeOptions } from './types/types';
-import useTreeState from './hooks/useTreeState';
-import SortableTree from './components/SortableTree';
-import { Modal, ModalProps } from '../Modal';
-import ModalAddUserBody from './components/ModalAddUserBody';
+import { Modal, ModalProps } from "../Modal";
+import ModalAddUserBody from "./components/ModalAddUserBody";
+import SortableTree from "./components/SortableTree";
+import useTreeState from "./hooks/useTreeState";
+import { Event, TreeItems, TreeOptions } from "./types/types";
 
 interface FolderSortableTreeProps {
   data: TreeItems;
@@ -22,11 +22,17 @@ const Wrapper = styled.div`
 export const ConfigContext = createContext<any>(null);
 
 const FolderSortableTree = (props: FolderSortableTreeProps) => {
-  const [addModalOptions, setAddModalOptions] = useState<ModalProps | null>(null);
+  const [addModalOptions, setAddModalOptions] = useState<ModalProps | null>(
+    null,
+  );
   const options: TreeOptions = {
     initOpenStatus: `OPEN`,
   };
-  const { treeState, reducers } = useTreeState({ data: props.data, options, onChange: props.onChange });
+  const { treeState, reducers } = useTreeState({
+    data: props.data,
+    options,
+    onChange: props.onChange,
+  });
   const { deleteNode, addNode, toggleOpen, reorder } = reducers;
 
   if (!treeState) return <></>;
@@ -36,20 +42,26 @@ const FolderSortableTree = (props: FolderSortableTreeProps) => {
       close: () => setAddModalOptions(null),
       buttons: [
         { title: `Cancel`, action: () => setAddModalOptions(null) },
-        { title: `Add`, action: (event) => {
-          const result = event.props.value;
-          if (result.valid) {
-            setAddModalOptions(null);
-            addNode(parentId, { firstName: result.firstName, lastName: result.lastName })
-          };
-        }},
+        {
+          title: `Add`,
+          action: (event) => {
+            const result = event.props.value;
+            if (result.valid) {
+              setAddModalOptions(null);
+              addNode(parentId, {
+                firstName: result.firstName,
+                lastName: result.lastName,
+              });
+            }
+          },
+        },
       ],
       title: `Enter name of the user`,
       body: () => {
         return ModalAddUserBody();
       },
     });
-  }
+  };
 
   const configs = {
     handleDelete: deleteNode,
@@ -75,5 +87,5 @@ const FolderSortableTree = (props: FolderSortableTreeProps) => {
   );
 };
 
-export * from './types/types';
+export * from "./types/types";
 export default FolderSortableTree;

@@ -1,11 +1,13 @@
-import { AnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { CSSProperties } from 'react';
+import { AnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { CSSProperties } from "react";
 
-import TreeItem, { TreeItemProps } from './TreeItem';
+import TreeItem, { TreeItemProps } from "./TreeItem";
 
-const animateLayoutChanges: AnimateLayoutChanges = ({ isSorting, wasDragging }) =>
-  isSorting || wasDragging ? false : true;
+const animateLayoutChanges: AnimateLayoutChanges = ({
+  isSorting,
+  wasDragging,
+}) => (isSorting || wasDragging ? false : true);
 
 const SortableTreeItem = ({ id, depth, ...props }: TreeItemProps) => {
   const {

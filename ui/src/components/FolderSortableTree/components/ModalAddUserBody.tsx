@@ -1,5 +1,5 @@
-import { Box, Form, FormField, TextInput } from 'grommet';
-import { useEffect, useState } from 'react';
+import { Box, Form, FormField, TextInput } from "grommet";
+import { useEffect, useState } from "react";
 
 const ModalAddUserBody = () => {
   const [values, setValues] = useState<{
@@ -15,7 +15,9 @@ const ModalAddUserBody = () => {
 
   useEffect(() => {
     setValues((prevState) => {
-      prevState.valid = !Object.values(errors).some((value) => value === true || value === ``);
+      prevState.valid = !Object.values(errors).some(
+        (value) => value === true || value === ``,
+      );
       return prevState;
     });
   }, [errors]);
@@ -39,15 +41,23 @@ const ModalAddUserBody = () => {
 
   return (
     <Form value={values}>
-      <FormField name="course" error={errors.firstName || errors.lastName && `Please enter values`} pad>
-        <Box width="medium" gap={'10px'}>
-          <TextInput 
+      <FormField
+        name="course"
+        error={errors.firstName || (errors.lastName && `Please enter values`)}
+        pad
+      >
+        <Box width="medium" gap={"10px"}>
+          <TextInput
             placeholder="Type first name..."
-            onChange={(event) => setFormValues({ name: 'firstName', value: event.target.value })}
+            onChange={(event) =>
+              setFormValues({ name: "firstName", value: event.target.value })
+            }
           />
-          <TextInput 
+          <TextInput
             placeholder="Type last name..."
-            onChange={(event) => setFormValues({ name: 'lastName', value: event.target.value })}
+            onChange={(event) =>
+              setFormValues({ name: "lastName", value: event.target.value })
+            }
           />
         </Box>
       </FormField>

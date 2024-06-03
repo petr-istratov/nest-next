@@ -2,22 +2,30 @@
 
 # API
 Create .env file and put database creds there
+
 example:
+
+```
 DB_DIALECT="postgres"
 DB_HOST="localhost"
 DB_PORT=5432
 DB_USER="postgres"
 DB_PASS="postgres"
 DB_NAME="db_name"
+```
 
-Run nest app locally with 'npm run start:dev -- -b swc'
+Run nest app locally with `npm run start:dev -- -b swc`
 
 # UI
 Create .env.local file with following line
-example:
-NEXT_PUBLIC_API_URL=http://localhost:8000
 
-Run nextJS app with 'npm run dev'
+example:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Run nextJS app with `npm run dev`
 
 # User experience
 Click 'Add independent user' to add new root user

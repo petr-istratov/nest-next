@@ -1,14 +1,14 @@
 import {
   BaseEntity,
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
   DeleteDateColumn,
-  UpdateDateColumn,
-  TreeParent,
-  TreeChildren,
+  Entity,
+  PrimaryGeneratedColumn,
   Tree,
+  TreeChildren,
+  TreeParent,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Tree('closure-table')
